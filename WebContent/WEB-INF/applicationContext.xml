@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+	default-lazy-init="true" default-autowire="byName">
+	<!--配置SessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<!-- 配置Hibernate属性 -->
+		<property name="hibernateProperties">
+			<props>
+				<!-- 配置数据库方言 -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<!-- 输出运行时生成的SQL语句 -->
+				<prop key="hibernate.show_sql"></prop>
+			</props>
+		</property>
+		<!-- 指定hibernate映射文件路径 -->
+		<property name="mappingResources">
+			<list>
+				<value>com/integration/entity/User.hbm.xml</value>
+				<value>com/integration/entity/Admin.hbm.xml</value>
+				<value>com/integration/entity/Room.hbm.xml</value>
+				<value>com/integration/entity/Order.hbm.xml</value>
+			</list>
+		</property>
+
+	</bean>
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property name="url">
+			<value>jdbc:mysql://localhost:3306/hotel</value>
+		</property>
+		<property name="username">
+			<value>root</value>
+		</property>
+		<property name="password">
+			<value>1234</value>
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+
+	<bean id="userDao" class="com.integration.dao.UserDAOImpl" scope="singleton">
+		<property name="sessionFactory">
+		<ref bean="sessionFactory"></ref>
+		</property>
+	</bean>
+	<bean id="userServiceTarget" class="com.integration.service.UserServiceImpl">
+		<property name="userDao" ref="userDao"></property>
+	</bean>
+	<bean id="userService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="target" ref="userServiceTarget"></property>
+		<property name="transactionManager" ref="transactionManager"></property>
+		<property name="transactionAttributes">
+
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+
+		</property>
+	</bean>
+
+	<bean id="saveUserAction" class="com.integration.action.user.SaveUserAction"
+		scope="prototype">
+		<property name="userService" ref="userService"></property>
+	</bean>
+	<bean id="listUserAction" class="com.integration.action.user.ListUserAction"
+		scope="prototype">
+		<property name="userService" ref="userService"></property>
+	</bean>
+	<bean id="removeUserAction" class="com.integration.action.user.RemoveUserAction"
+		scope="prototype">
+		<property name="userService" ref="userService"></property>
+	</bean>
+	<bean id="updatePUserAction" class="com.integration.action.user.UpdatePUser"
+		scope="prototype">
+		<property name="userService" ref="userService"></property>
+	</bean>
+	<bean id="updateUserAction" class="com.integration.action.user.UpdateUserAction"
+		scope="prototype">
+		<property name="userService" ref="userService"></property>
+	</bean>
+	<bean id="userAction" class="com.integration.action.user.UserAction"
+		scope="prototype">
+		<property name="userService" ref="userService"></property>
+	</bean>
+
+	<!-- adminDao -->
+	<bean id="adminDao" class="com.integration.dao.AdminDAOImpl"
+		scope="singleton">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="adminServiceTarget" class="com.integration.service.AdminServiceImpl">
+		<property name="adminDao" ref="adminDao"></property>
+	</bean>
+	<bean id="adminService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="target" ref="adminServiceTarget"></property>
+		<property name="transactionManager" ref="transactionManager"></property>
+		<property name="transactionAttributes">
+
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="saveAdminAction" class="com.integration.action.admin.SaveAdminAction"
+		scope="prototy">
+		<property name="adminService" ref="adminService"></property>
+	</bean>
+	<bean id="adminServiceAction" class="com.integration.action.admin.AdminServiceAction"
+		scope="prototy">
+		<property name="adminService" ref="adminService"></property>
+	</bean>
+
+	<!-- roomDao -->
+
+	<bean id="roomDao" class="com.integration.dao.RoomDAOImpl" scope="singleton">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="roomServiceTarget" class="com.integration.service.RoomServiceImpl">
+		<property name="roomDao" ref="roomDao"></property>
+	</bean>
+	<bean id="roomService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="target" ref="roomServiceTarget"></property>
+		<property name="transactionManager" ref="transactionManager"></property>
+		<property name="transactionAttributes">
+
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+
+		</property>
+	</bean>
+
+	<bean id="saveRoomAction" class="com.integration.action.room.SaveRoomAction"
+		scope="prototype">
+		<property name="roomService" ref="roomService"></property>
+	</bean>
+	<bean id="listRoomAction" class="com.integration.action.room.ListRoomAction"
+		scope="prototype">
+		<property name="roomService" ref="roomService"></property>
+	</bean>
+	<bean id="removeRoomAction" class="com.integration.action.user.RemoveRoomAction"
+		scope="prototype">
+		<property name="roomService" ref="roomService"></property>
+	</bean>
+	<bean id="updatePRoomAction" class="com.integration.action.room.UpdatePRoom"
+		scope="prototype">
+		<property name="roomService" ref="roomService"></property>
+	</bean>
+	<bean id="updateRoomAction" class="com.integration.action.user.UpdateRoomAction"
+		scope="prototype">
+		<property name="roomService" ref="roomService"></property>
+	</bean>
+	<!-- orderDao -->
+	<bean id="orderDao" class="com.integration.dao.OrderDAOImpl"
+		scope="singleton">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="orderServiceTarget" class="com.integration.service.OrderServiceImpl">
+		<property name="orderDao" ref="orderDao"></property>
+	</bean>
+	<bean id="orderService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="target" ref="orderServiceTarget"></property>
+		<property name="transactionManager" ref="transactionManager"></property>
+		<property name="transactionAttributes">
+
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="saveOrderAction" class="com.integration.action.order.SaveOrderAction"
+		scope="prototy">
+		<property name="orderService" ref="orderService"></property>
+	</bean>
+	<bean id="orderServiceAction" class="com.integration.action.order.OrderServiceAction"
+		scope="prototy">
+		<property name="orderService" ref="orderService"></property>
+	</bean>
+	<bean id="listOrderAction" class="com.integration.action.order.ListOrderAction"
+		scope="prototy">
+		<property name="roomService" ref="roomService"></property>
+		<property name="orderService" ref="orderService"></property>
+	</bean>
+</beans>

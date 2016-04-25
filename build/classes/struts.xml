@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.objectFactory" value="spring" />
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.i18n.reload" value="true" />
+	<constant name="struts.configuration.xml.reload" value="true" />
+	<constant name="struts.custom.i18n.resources" value="globalMessages" />
+	<constant name="struts.url.includeParams" value="none" />
+	<constant name="struts.ui.theme" value="xhtml"></constant>
+
+
+	<package name="hotel" extends="struts-default" namespace="">
+		<action name="userService" class="com.integration.action.user.UserAction">
+			<result name="success" type="redirect">/info/userInfo.jsp</result>
+			<result name="input" type="redirect">/login.jsp</result>
+			<result name="userUpdate" type="dispatcher">/info/changePwd.jsp</result>
+			<result name="updateSuc" type="dispatcher">/info/result.jsp</result>
+		</action>
+		<action name="adminService" class="com.integration.action.admin.AdminServiceAction">
+			<result name="loginSuc" type="redirect">/info/adminInfo.jsp</result>
+			<result name="input" type="redirect">/adminLogin.jsp</result>
+		</action>
+		<action name="saveUser" class="com.integration.action.user.SaveUserAction">
+			<result name="success" type="redirect">
+				<param name="actionName">listUser.action</param>
+			</result>
+			<result name="regSuc" type="dispatcher">/info/userInfo.jsp</result>
+		</action>
+	</package>
+	<!-- 用户登录后才能访问的action -->
+	<package name="authority" extends="struts-default" namespace="">
+		<interceptors>
+			<interceptor name="authority"
+				class="com.integration.interceptor.AuthorityInterceptor" />
+			<interceptor-stack name="mydefault">
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="authority"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="mydefault"></default-interceptor-ref>
+		<global-results>
+			<result name="login">/login.jsp</result>
+		</global-results>
+		<action name="saveOrder" class="com.integration.action.order.SaveOrderAction">
+			<result name="success" type="dispatcher">/order/add.jsp</result>
+			<result name="addSuc" type="redirect">orderService.action</result>
+			<result name="addFail" type="dispatcher">/info/result.jsp</result>
+		</action>
+		<action name="orderService" class="com.integration.action.order.OrderServiceAction">
+			<result name="success" type="dispatcher">/info/orderInfo.jsp</result>
+			<result name="delSuc" type="dispatcher">/info/result.jsp</result>
+		</action>
+	</package>
+
+
+	<!-- 管理员登录后才能访问的action -->
+	<package name="authorityAdmin" extends="struts-default"
+		namespace="">
+		<interceptors>
+			<interceptor name="authority"
+				class="com.integration.interceptor.AdminInterceptor" />
+			<interceptor-stack name="mydefault">
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="authority"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="mydefault"></default-interceptor-ref>
+		<global-results>
+			<result name="login">/adminLogin.jsp</result>
+		</global-results>
+		
+			<action name="saveUser" class="com.integration.action.user.SaveUserAction">
+			<result name="success" type="redirect">listUser.action
+			</result>
+		</action>
+		
+		<action name="listUser" class="com.integration.action.user.ListUserAction">
+			<result name="success">/user/list.jsp</result>
+		</action>
+
+		<action name="deleteUser" class="com.integration.action.user.RemoveUserAction">
+			<result name="success" type="redirect">listUser.action</result>
+		</action>
+		<action name="updatePUser" class="com.integration.action.user.UpdatePUser">
+			<result name="success" type="redirect">/user/update.jsp</result>
+		</action>
+		<action name="updateUser" class="com.integration.action.user.UpdateUserAction">
+			<result name="success" type="redirect">listUser.action</result>
+		</action>
+		<action name="saveAdmin" class="com.integration.action.admin.SaveAdminAction">
+			<result name="success" type="redirect">/index.jsp</result>
+		</action>
+		<action name="saveRoom" class="com.integration.action.room.SaveRoomAction">
+			<result name="success" type="redirect">listRoom.action</result>
+		</action>
+		<action name="listRoom" class="com.integration.action.room.ListRoomAction">
+			<result name="success">/room/list.jsp</result>
+		</action>
+		<action name="deleteRoom" class="com.integration.action.room.RemoveRoomAction">
+			<result name="success" type="redirect">listRoom.action</result>
+		</action>
+		<action name="updatePRoom" class="com.integration.action.room.UpdatePRoom">
+			<result name="success">/room/update.jsp</result>
+		</action>
+		<action name="updateRoom" class="com.integration.action.room.UpdateRoomAction">
+			<result name="success" type="redirect">listRoom.action</result>
+		</action>
+
+		<action name="listOrder" class="com.integration.action.order.ListOrderAction">
+			<result name="success" type="dispatcher">/order/list.jsp</result>
+
+		</action>
+	</package>
+</struts>

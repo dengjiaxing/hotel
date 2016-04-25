@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2016-4-20 19:19:29 by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.integration.entity.Order" table="h_order">
+        <id name="orderid" type="int">
+            <column name="orderid" />
+            <generator class="identity" />
+        </id>
+        <property name="userid" type="int">
+            <column name="userid" />
+        </property>
+        <property name="roomid" type="int">
+            <column name="roomid" />
+        </property>
+    </class>
+</hibernate-mapping>

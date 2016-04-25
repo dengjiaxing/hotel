@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2016-4-20 19:19:29 by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.integration.entity.User" table="user">
+        <id name="userid" type="int">
+            <column name="userid" />
+            <generator class="identity" />
+        </id>
+        <property name="username" type="java.lang.String">
+            <column name="username" />
+        </property>
+        <property name="password" type="java.lang.String">
+            <column name="password" />
+        </property>
+        <property name="mobile" type="java.lang.String">
+            <column name="mobile" />
+        </property>
+        <property name="email" type="java.lang.String">
+            <column name="email" />
+        </property>
+    </class>
+</hibernate-mapping>
